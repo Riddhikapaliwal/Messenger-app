@@ -2,10 +2,10 @@
 
 import {useCallback, useMemo} from "react";
 import {useRouter} from "next/navigation"
-import {Conversation, Message, User} from "@prisma/client";
 import {format} from "date-fns";
 import {useSession} from "next-auth/react";
 import clsx from "clsx";
+import { User } from "@/app/generated/prisma";
 
 import { FullConversationType } from "@/app/types";
 import useOtherUser from "@/app/hooks/useOtherUser";
@@ -51,7 +51,7 @@ const ConversationBox=({
         }
 
         return seenArray
-        .filter((user)=> user.email === userEmail).length != 0;
+        .filter((user: User) => user.email === userEmail).length != 0;
     },[userEmail, lastMessage]);
 
     const lastMessageText= useMemo(() =>{
@@ -97,9 +97,9 @@ const ConversationBox=({
                     font-medium
                     text-gray-900
                     ">
-                    {data.name || otherUser.name}
+                    {data.name || otherUser?.name || 'Unknown user'}
                 </p>
-                {lastMessage?.creatdAt && (
+                {lastMessage?.createdAt && (
                     <p
                         className="
                             text-xs
