@@ -8,6 +8,7 @@ interface DesktopItemProps{
     icon: React.ComponentType<{ className: string }>;
     href: string;
     onClick?: () => void;
+    active?: boolean;
 }
 
 const DesktopItem: React.FC<DesktopItemProps>= ({
