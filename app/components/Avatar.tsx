@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import useActiveList from '../hooks/useActiveList';
 
 interface AvatarProps{
     user?: {
@@ -8,9 +9,11 @@ interface AvatarProps{
     } | null;
 }
 
-const Avatar= ({
+const Avatar:React.FC<AvatarProps>= ({
     user
-}: AvatarProps)=>{
+}) =>{
+    const{members} = useActiveList();
+    const isActive= members.indexOf(user?.email!) != -1;
     return(
         <div className="relative">
         <div 
@@ -29,6 +32,7 @@ const Avatar= ({
                         src={user?.image || '/images/placeholder.png'}
                         fill />
         </div>
+        {isActive && (
         <span
             className="
                 absolute
@@ -44,6 +48,7 @@ const Avatar= ({
                 md:h-3
                 md:w-3"
         />
+        )}
         </div>
     )
 }
