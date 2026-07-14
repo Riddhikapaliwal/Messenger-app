@@ -1,11 +1,12 @@
 'use client'
 
 import { FullMessageType } from "@/app/types";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import MessageBox from "./MessageBox";
 import axios from "axios";
 import useConversation from "@/app/hooks/useConversation";
-
+import { pusherClient } from "@/app/libs/pusher";
+import {find} from "lodash"
 
 interface BodyProps{
   initialMessages: FullMessageType[]
@@ -15,19 +16,56 @@ const Body:React.FC<BodyProps> = ({
   initialMessages
 }) => {
   const bottomRef= useRef<HTMLDivElement>(null);
-  const messages = initialMessages;
+  const [messages, setMessages]= useState(initialMessages)
 
   const {conversationId} = useConversation();
 
   useEffect(() => {
-    if (!conversationId) {
-      return;
-    }
+    axios.post(`/api/conversations/${conversationId}/seen`)
+    },[conversationId]);
 
-    void axios.post(`/api/conversations/${conversationId}/seen`).catch(() => {
-      // Avoid unhandled promise rejections from a fire-and-forget request.
-    });
-  }, [conversationId]);
+    useEffect(()=>{
+      pusherClient.subscribe(conversationId);
+      bottomRef?.current?.scrollIntoView();
+
+      const messageHandler=(message: FullMessageType)=>{
+        axios.post(`/api/conversations/${conversationId}/seen`)
+
+        setMessages((current) => {
+          if(find(current, {id: message.id})){
+            return current;
+          }
+          return [...current, message];
+       });
+
+             bottomRef?.current?.scrollIntoView();
+
+      }
+
+      const updateMessageHandler= ( newMessage: FullMessageType) =>{
+        setMessages((current)=> current.map((currentMessage)=> {
+          if(currentMessage.id=== newMessage.id){
+            return newMessage;
+          }
+          return currentMessage                    
+        }))
+
+      }
+
+      pusherClient.bind('messages:new', messageHandler);
+      pusherClient.bind('message:update', updateMessageHandler)
+
+        return()=> {
+          pusherClient.unsubscribe(conversationId);
+          pusherClient.unbind('messages:new', messageHandler);
+          pusherClient.unbind('message:update', updateMessageHandler);
+
+
+       
+      };
+    },[conversationId])
+
+  
 
   return (
     <div className="flex-1 overflow-y-auto">
