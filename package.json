@@ -25,7 +25,7 @@
     "next-cloudinary": "^6.17.5",
     "prisma": "^5.22.0",
     "pusher": "^5.3.4",
-    "pusher-js": "^8.5.0",
+    "pusher-js": "^7.6.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-hook-form": "^7.79.0",

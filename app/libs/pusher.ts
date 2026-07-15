@@ -3,9 +3,9 @@ import PusherClient from "pusher-js"
 
 export const pusherServer= new PusherServer({
     appId: process.env.PUSHER_APP_ID!,
-    key: process.env.NEXT_PUBLIC_PUSHER_API_KEY!,
+    key: process.env.NEXT_PUBLIC_PUSHER_APP_KEY!,
     secret: process.env.PUSHER_SECRET!,
-    cluster: 'eu',
+    cluster: 'ap2',
     useTLS: true
 })
 
@@ -16,6 +16,6 @@ export const pusherClient= new PusherClient(
             endpoint: '/api/pusher/auth',
             transport: 'ajax',
         },
-        cluster: 'eu'
+        cluster: "ap2"
     }
 )

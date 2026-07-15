@@ -40,17 +40,34 @@ const SettingsModal:React.FC<SettingsModalProps> = ({
             image: currentUser?.image
         }
     });
+    register("image");
 
     const image = watch("image");
+    console.log("WATCH IMAGE =", image);
 
-const handleUpload = (result: any) => {
-  setValue("image", result?.info?.secure_url, {
+// const handleUpload = (result: any) => {
+//   setValue("image", result?.info?.secure_url, {
+//     shouldValidate: true,
+//   });
+// };
+  const handleUpload = (result: any) => {
+  console.log("FULL RESULT", result);
+  console.log("INFO", result.info);
+  console.log("SECURE URL", result.info?.secure_url);
+
+  setValue("image", result.info?.secure_url, {
     shouldValidate: true,
+    shouldDirty: true,
+    shouldTouch: true,
   });
+
+  console.log("AFTER SETVALUE", result.info?.secure_url);
 };
 
 const onSubmit = (data: FieldValues) => {
   setIsLoading(true);
+    console.log("FORM DATA", data);
+
 
   axios.post("/api/settings", data)
     .then(() => {
@@ -111,22 +128,28 @@ const onSubmit = (data: FieldValues) => {
                                     width="48"
                                     height="48"
                                     className="rounded-full"
-                                    src={image || currentUser?.image || '/images/placeholder.jpg'}
+                                    src={image || currentUser?.image || '/images/placeholder.png'}
                                     alt="Avatar"
 
                                 />
                                 <CldUploadButton
-                                    options={{maxFiles: 1}}
-                                    onUpload={handleUpload}
-                                    uploadPreset= "g1usl1sb"
-                                >
-                                <Button
-                                    disabled={isLoading}
-                                    secondary
-                                    type="button">
+                                    options={{ maxFiles: 1 }}
+                                    uploadPreset="tx35xwbv"
+                                    onSuccess={(result) => {
+                                    console.log("SUCCESS", result);
+                                    handleUpload(result);
+                                }}
+                                    className="
+                                        rounded-md
+                                        bg-sky-500
+                                        px-3
+                                        py-2
+                                        text-white
+                                        hover:bg-sky-600
+                                    "
+                                    >
                                     Change
-                                </Button>
-                                </CldUploadButton>
+                                    </CldUploadButton>
                             </div>
                            </div>
                     </div>

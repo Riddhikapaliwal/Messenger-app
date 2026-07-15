@@ -71,7 +71,7 @@ const Form = () => {
     ">
         <CldUploadButton
             options={{maxFiles: 1}}
-            onUpload={handleUpload}
+            onSuccess={handleUpload}
             uploadPreset="tx35xwbv">
         <HiPhoto size={30} className="text-sky-500"/>
         </CldUploadButton>
@@ -85,7 +85,7 @@ const Form = () => {
                 register={register}
                 errors={errors}
                 required
-                placeholder="White a message"
+                placeholder="Write a message"
                 />
                 <button
                     type="submit"
